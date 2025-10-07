@@ -1,4 +1,4 @@
-# ittokunvim xyz
+# ittokunvim website
 
 `ittokunvim-xyz`はittokunvimが公開しているWebサイトです
 
