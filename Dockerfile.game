@@ -1,13 +1,28 @@
-FROM node:20.4.0-bookworm-slim
+FROM node:20.4.0-alpine AS builder
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y git openssh-client
+# 必要なパッケージのみ最小で入れる
+RUN apk add --no-cache git openssh;
 
-RUN npm install -g http-server@14.0.0
+# known_hosts登録（小さいレイヤーにまとめる）
+RUN mkdir -p -m 0700 ~/.ssh;
+RUN ssh-keyscan github.com >> ~/.ssh/known_hosts;
 
-RUN mkdir -p -m 0700 ~/.ssh && \
-  ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-  git config --global url.git@github.com:.insteadOf https://github.com/
+# --depth=1でshallow clone
+RUN --mount=type=ssh git clone --depth 1 git@github.com:ittokunvim/game.git;
 
-RUN --mount=type=ssh,uid=1000 \
-  git clone git@github.com:ittokunvim/game.git
+# 必要であればhttp-serverインストール
+RUN npm install -g http-server@14.0.0;
+
+# .gitディレクトリ削除でサイズ節約
+RUN rm -rf ./doc/.git;
+
+# [optional] 必要なファイルだけコピーする場合はここで新しいステージにkopi
+# FROM node:20.4.0-alpine AS runtime
+# WORKDIR /app
+# COPY --from=builder /app /app
+# CMD ["http-server", "doc"]
+
+# 直接 run する場合
+# CMD ["http-server", "doc"]
+
