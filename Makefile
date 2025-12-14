@@ -16,21 +16,21 @@ echo_ip:
 
 # make app_init: Access the app container
 app_init:
-	docker compose run --rm app bash
+	docker compose run --rm app ash
 
 # make doc_init: Access the doc container
 doc_init:
-	docker compose run --rm doc bash
+	docker compose run --rm doc ash
 
 # make game_init: Access the game container
 game_init:
-	docker compose run --rm game bash
+	docker compose run --rm game ash
 
 # make music_init: Access the music container
 music_init:
-	docker compose run --rm music bash
+	docker compose run --rm music ash
 
 # make picture_init: Access the picture container
 picture_init:
-	docker compose run --rm picture bash
+	docker compose run --rm picture ash
 
