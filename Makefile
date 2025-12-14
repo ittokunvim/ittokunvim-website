@@ -14,6 +14,9 @@ down:
 echo_ip:
 	networksetup -getinfo Wi-Fi
 
+set_sshkey:
+	ssh-add --apple-use-keychain ~/.ssh/github
+
 # make app_init: Access the app container
 app_init:
 	docker compose run --rm app ash
