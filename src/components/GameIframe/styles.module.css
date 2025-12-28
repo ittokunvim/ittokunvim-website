@@ -1,10 +1,11 @@
 .button {
+  width: 100%;
   display: inline-flex;
   position: absolute;
+  left: 0;
   justify-content: center;
   align-items: center;
   background-color: var(--color-background-tertiary);
-  margin: 0 auto;
 }
 
 .button button {
@@ -27,7 +28,7 @@
 }
 
 .iframe {
+  width: 100%;
   border: none;
 }
-
 

@@ -15,10 +15,10 @@ type ButtonProps = {
 
 function Button({ gameData, onButtonClick }: ButtonProps) {
   const { size } = gameData;
-  const [width, height] = size.split("x").map((n) => Number(n));
+  const [_width, height] = size.split("x").map((n) => Number(n));
 
   return (
-    <div className={styles.button} style={{ width, height }}>
+    <div className={styles.button} style={{ height }}>
       <button onClick={onButtonClick}>
         <FontAwesomeIcon icon={faCirclePlay} />
         Run Game
