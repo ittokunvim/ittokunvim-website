@@ -18,12 +18,18 @@ export default function MusicList({ music, route }: Props) {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0);
+
+  // 音楽プレーヤーのセットアップ
   useEffect(() => {
     setAudio(new Audio());
   }, []);
 
+  // 再生ボタン押下時の初期化と再生と停止
   const handleClick = (path: string) => {
-    if (!audio) return;
+    if (!audio) {
+      return;
+    }
+
     audio.src = path;
     audio.volume = 0;
     setVolume(0);
@@ -36,16 +42,25 @@ export default function MusicList({ music, route }: Props) {
       audio.pause();
     }
   };
+
+  // 音楽プレーヤーの状態に応じて表示するアイコンを変更
   const toggleIcon = (path: string) => {
-    if (!audio) return faPlay;
+    if (!audio) {
+      return faPlay;
+    }
+
     if (isPlaying && audio.src === encodeURI(path)) {
       return faPause;
     } else {
       return faPlay;
     }
   };
+
+  // 音楽プレーヤーの初めと終わりの音量を徐々に調節する
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || !audio) {
+      return;
+    }
 
     const interval = setInterval(() => {
       if (!audio) return;
@@ -55,6 +70,8 @@ export default function MusicList({ music, route }: Props) {
 
     return () => clearInterval(interval);
   }, [isPlaying, audio, volume]);
+
+  // 検索フォーム文字入力時に結果をHTMLで出力する
   const searchMusic = ({ title, artist, createdAt }: SearchData) => {
     if (title === "" && artist === "" && createdAt === "") {
       setMusicList(music);
@@ -62,6 +79,7 @@ export default function MusicList({ music, route }: Props) {
 
     title = title.split(" ").join("*").toLowerCase();
     artist = artist.split(" ").join("*").toLowerCase();
+
     const titleRegex = new RegExp(title, "i");
     const artistRegex = new RegExp(artist, "i");
     const createdAtRegex = new RegExp(createdAt, "i");
