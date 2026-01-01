@@ -18,6 +18,7 @@ export default function MusicList({ music, route }: Props) {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0);
+  const [volumeOnce, setVolumeOnce] = useState<boolean>(false);
 
   // 音楽プレーヤーのセットアップ
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function MusicList({ music, route }: Props) {
     audio.src = path;
     audio.volume = 0;
     setVolume(0);
+    setVolumeOnce(false);
 
     if (!isPlaying) {
       setIsPlaying(true);
@@ -62,11 +64,46 @@ export default function MusicList({ music, route }: Props) {
       return;
     }
 
+    const fadingDuration = 5.0;
+    const tickMs = 100;
+    const maxVolume = 1.0;
+
     const interval = setInterval(() => {
-      if (!audio) return;
-      setVolume(Math.min(1, volume + 0.02));
-      audio.volume = volume;
-    }, 100);
+      // 音楽プレーヤーの再生が終わったら終了
+      if (audio.paused || audio.ended) {
+        return clearInterval(interval);
+      }
+
+      const nowTime = audio.currentTime;
+      const duration = audio.duration;
+
+      // 音楽プレーヤーの初めの音量を徐々に上げる
+      if (!volumeOnce) {
+        const nextVolume = Math.min(maxVolume, (nowTime / fadingDuration) * maxVolume);
+
+        if (nextVolume >= maxVolume) {
+          audio.volume = maxVolume;
+          setVolumeOnce(true);
+        }
+
+        setVolume(nextVolume);
+        audio.volume = nextVolume;
+      }
+
+      // 音楽プレーヤーの終わりの音量を徐々に下げる
+      const fadeOutStart = Math.max(0, duration - fadingDuration);
+      if (nowTime > fadeOutStart) {
+        const nextVolume = Math.max(0.0, ((duration - nowTime) / fadingDuration) * maxVolume);
+
+        if (nextVolume <= 0.0) {
+          audio.volume = 0.0;
+          return;
+        }
+
+        setVolume(nextVolume);
+        audio.volume = nextVolume;
+      }
+    }, tickMs);
 
     return () => clearInterval(interval);
   }, [isPlaying, audio, volume]);
