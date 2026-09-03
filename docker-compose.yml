@@ -39,7 +39,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.music
-    command: ["npx", "http-server", "-p", "4002", "music"]
+    command: ["npx", "http-server", "-p", "4002", "music/docs"]
     ports:
       - "4002:4002"
 
@@ -47,7 +47,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.picture
-    command: ["npx", "http-server", "-p", "4003", "picture"]
+    command: ["npx", "http-server", "-p", "4003", "picture/docs"]
     ports:
       - "4003:4003"
 
