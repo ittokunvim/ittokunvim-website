@@ -7,30 +7,50 @@ import { JsonLd, JsonLdScript } from "@/components/JsonLdScript";
 
 import styles from "./page.module.css";
 
+// ページ設定
+const PAGE_CONFIG = {
+  title: "写真リスト",
+  description: "写真の一覧を表示するページ",
+  route: "/pictures",
+} as const;
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
-const [title, name] = ["写真リスト", "写真リスト"];
-const description = "写真の一覧を表示するページ";
-const route = "/pictures";
-const url = BASE_URL + route;
+const url = BASE_URL + PAGE_CONFIG.route;
+
+// メタデータの設定
 const metadataProps: MetadataProps = {
-  title,
-  description,
+  title: PAGE_CONFIG.title,
+  description: PAGE_CONFIG.description,
   url,
 };
 
 export const metadata: Metadata = setMetadata(metadataProps);
 
 export default async function Page() {
-  const pictures: PictureData[] = await getPictureDataAll();
-  const jsonLd: JsonLd = {
-    name,
-    description,
-  };
+  try {
+    // 写真データを取得
+    const pictures: PictureData[] = await getPictureDataAll();
 
-  return (
-    <main className={styles.main}>
-      <PictureList pictures={pictures} route={route} />
-      <JsonLdScript data={jsonLd} />
-    </main>
-  );
+    // JSON-LD スキーマデータ
+    const jsonLd: JsonLd = {
+      name: PAGE_CONFIG.title,
+      description: PAGE_CONFIG.description,
+    };
+
+    return (
+      <main className={styles.main}>
+        <PictureList pictures={pictures} route={PAGE_CONFIG.route} />
+        <JsonLdScript data={jsonLd} />
+      </main>
+    );
+  } catch (error) {
+    console.error("Failed to fetch pictures:", error);
+
+    // エラーが発生した場合は空のリストを表示
+    return (
+      <main className={styles.main}>
+        <PictureList pictures={[]} route={PAGE_CONFIG.route} />
+      </main>
+    );
+  }
 }
