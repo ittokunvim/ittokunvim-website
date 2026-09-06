@@ -2,7 +2,7 @@
 
 import Image, { ImageLoaderProps } from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { PictureData } from "@/lib/picture";
@@ -24,24 +24,41 @@ const imageLoader = ({ src, width, quality }: ImageLoaderProps): string => {
   return url.href;
 };
 
+/**
+ * 写真一覧コンポーネント
+ * 検索機能付きで写真を表示する
+ */
 export default function PictureList({ pictures, route }: Props) {
   const [pictureList, setPictureList] = useState<PictureData[]>(pictures);
-  const searchPictures = ({ bonus, flag, album }: SearchData) => {
-    if (bonus === "" && flag === "" && album === "") {
-      setPictureList(pictures);
-    }
-    const bonusRegex = new RegExp(bonus, "i");
-    const flagRegex = new RegExp(flag, "i");
-    const albumRegex = new RegExp(album, "i");
-    const searchPictureList = pictures.filter((picture) => {
-      const isBonusTest = bonusRegex.test(picture.bonus);
-      const isFlagTest = flagRegex.test(picture.flag);
-      const isAlbumTest = albumRegex.test(picture.album);
-      return (isBonusTest && isFlagTest && isAlbumTest);
-    });
 
-    setPictureList(searchPictureList);
-  };
+  // 検索条件に基づいて写真リストをフィルタリングする
+  const searchPictures = useCallback(
+    (searchData: SearchData) => {
+      const { description, createdAt } = searchData;
+
+      // 両方の検索条件が空の場合は全て表示
+      if (description === "" && createdAt === "") {
+        setPictureList(pictures);
+        return;
+      }
+
+      // 検索条件に基づいてフィルタリング
+      const descriptionRegex = new RegExp(description, "i");
+      const createdAtRegex = new RegExp(createdAt, "i");
+
+      const filteredList = pictures.filter((picture) => {
+        const isDescriptionMatch =
+          description === "" || descriptionRegex.test(picture.description);
+        const isCreatedAtMatch =
+          createdAt === "" || createdAtRegex.test(picture.createdAt);
+
+        return isDescriptionMatch && isCreatedAtMatch;
+      });
+
+      setPictureList(filteredList);
+    },
+    [pictures]
+  );
 
   return (
     <article className={styles.pictures}>
@@ -49,28 +66,22 @@ export default function PictureList({ pictures, route }: Props) {
         <FontAwesomeIcon icon={faImage} />
         写真リスト
       </h3>
-      {route === "/pictures" && (
-        <SearchForm searchPicture={searchPictures} />
-      )}
+      {route === "/pictures" && <SearchForm searchPicture={searchPictures} />}
       <div className={styles.list}>
-        {pictureList.map((picture, i) => (
-          <div className={styles.item} key={i}>
+        {pictureList.map((picture) => (
+          <div className={styles.item} key={picture.path}>
             <div className={styles.image}>
               <PictureImage path={picture.path} />
             </div>
             <table>
               <tbody>
                 <tr>
-                  <th>ボーナス</th>
-                  <td>{picture.bonus}</td>
+                  <th>説明</th>
+                  <td>{picture.description}</td>
                 </tr>
                 <tr>
-                  <th>フラグ</th>
-                  <td>{picture.flag}</td>
-                </tr>
-                <tr>
-                  <th>アルバム</th>
-                  <td>{picture.album}</td>
+                  <th>作成日時</th>
+                  <td>{picture.createdAt}</td>
                 </tr>
               </tbody>
             </table>
@@ -86,19 +97,17 @@ export default function PictureList({ pictures, route }: Props) {
   );
 }
 
-function PictureImage(props: { path: string }) {
-  const path = props.path;
-  const { src, alt, width, height } = {
-    src: path,
-    alt: "ittokunvim picture",
-    width: 200,
-    height: 200,
-  };
-  return <Image
-    loader={imageLoader}
-    src={src}
-    alt={alt}
-    width={width}
-    height={height}
-  />;
+/**
+ * 写真を表示するコンポーネント
+ */
+function PictureImage({ path }: { path: string }) {
+  return (
+    <Image
+      loader={imageLoader}
+      src={path}
+      alt="ittokunvim picture"
+      width={200}
+      height={200}
+    />
+  );
 }
