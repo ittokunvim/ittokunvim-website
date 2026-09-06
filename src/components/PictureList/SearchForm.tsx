@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { getMonthRange } from "@/lib/picture";
 import styles from "./styles.module.css";
 
 export type SearchData = {
-  bonus: string;
-  flag: string;
-  album: string;
+  description: string;
+  createdAt: string;
 };
 
 type Props = {
@@ -14,45 +14,38 @@ type Props = {
 };
 
 export function SearchForm({ searchPicture }: Props) {
-  const bonusList = [
-    "",
-    "BB",
-    "RB",
-    "HB",
-    "CB",
-  ];
-  const albumList = [
-    { en: "", ja: "" },
-    { en: "hyper-rush", ja: "ハイパーラッシュ" },
-    { en: "discup-ur", ja: "ディスクアップUR" }
-  ];
+  // 月の一覧を計算（変更されない場合は再計算しない）
+  // 初めの要素に空の文字列を入れるのは検索条件を無視するため
+  const createdAtList = useMemo(
+    () => ["", ...getMonthRange("2026-03", "2026-08")],
+    []
+  );
+
+  // 検索条件を一つの状態で管理
   const [searchValue, setSearchValue] = useState<SearchData>({
-    bonus: "",
-    flag: "",
-    album: "",
+    description: "",
+    createdAt: "",
   });
-  const [inputBonusValue, setInputBonusValue] = useState<string>("");
-  const [inputFlagValue, setInputFlagValue] = useState<string>("");
-  const [inputAlbumValue, setInputAlbumValue] = useState<string>("");
-  const handleInputBonusChange = (value: string) => {
-    setInputBonusValue(value);
-    searchValue.bonus = value;
-    setSearchValue(searchValue);
-    searchPicture(searchValue);
-  };
-  const handleInputFlagChange = (value: string) => {
-    value = value.replace(/[^0-9a-zA-Z ]/g, "");
-    setInputFlagValue(value);
-    searchValue.flag = value;
-    setSearchValue(searchValue);
-    searchPicture(searchValue);
-  };
-  const handleInputAlbumChange = (value: string) => {
-    setInputAlbumValue(value);
-    searchValue.album = value;
-    setSearchValue(searchValue);
-    searchPicture(searchValue);
-  };
+
+  // 説明の変更を処理（新しいオブジェクトを作成）
+  const handleInputDescriptionChange = useCallback(
+    (value: string) => {
+      const newSearchValue = { ...searchValue, description: value };
+      setSearchValue(newSearchValue);
+      searchPicture(newSearchValue);
+    },
+    [searchValue, searchPicture]
+  );
+
+  // 作成日時の変更を処理（新しいオブジェクトを作成）
+  const handleInputCreatedAtChange = useCallback(
+    (value: string) => {
+      const newSearchValue = { ...searchValue, createdAt: value };
+      setSearchValue(newSearchValue);
+      searchPicture(newSearchValue);
+    },
+    [searchValue, searchPicture]
+  );
 
   return (
     <div className={styles.search}>
@@ -62,32 +55,21 @@ export function SearchForm({ searchPicture }: Props) {
       </h4>
       <div className={styles.form}>
         <div>
-          <select
-            value={inputBonusValue}
-            onChange={(e) => handleInputBonusChange(e.target.value)}
-          >
-            <option value="" disabled>ボーナス</option>
-            {bonusList.map((bonus, i) => (
-              <option key={i} value={bonus}>{bonus}</option>
-            ))}
-          </select>
-        </div>
-        <div>
           <input
             type="text"
-            value={inputFlagValue}
-            placeholder="フラグ"
-            onChange={(e) => handleInputFlagChange(e.target.value)}
+            value={searchValue.description}
+            placeholder="説明"
+            onChange={(e) => handleInputDescriptionChange(e.target.value)}
           />
         </div>
         <div>
           <select
-            value={inputAlbumValue}
-            onChange={(e) => handleInputAlbumChange(e.target.value)}
+            value={searchValue.createdAt}
+            onChange={(e) => handleInputCreatedAtChange(e.target.value)}
           >
-            <option value="" disabled>アルバム</option>
-            {albumList.map((album, i) => (
-              <option key={i} value={album.en}>{album.ja}</option>
+            <option value="">作成日時</option>
+            {createdAtList.map((month, i) => (
+              <option key={i} value={month}>{month}</option>
             ))}
           </select>
         </div>
