@@ -9,16 +9,12 @@ import styles from "./styles.module.css";
 const GAMESITE_URL = process.env.NEXT_PUBLIC_GAMESITE_URL;
 
 type ButtonProps = {
-  gameData: GameData;
   onButtonClick: () => void;
 };
 
-function Button({ gameData, onButtonClick }: ButtonProps) {
-  const { size } = gameData;
-  const [_width, height] = size.split("x").map((n) => Number(n));
-
+function Button({ onButtonClick }: ButtonProps) {
   return (
-    <div className={styles.button} style={{ height }}>
+    <div className={styles.button}>
       <button onClick={onButtonClick}>
         <FontAwesomeIcon icon={faCirclePlay} />
         Run Game
@@ -28,15 +24,12 @@ function Button({ gameData, onButtonClick }: ButtonProps) {
 }
 
 function Iframe({ gameData }: { gameData: GameData }) {
-  const { slug, size } = gameData;
-  const [width, height] = size.split("x");
+  const { slug } = gameData;
   const iframeURL = GAMESITE_URL + "/" + slug;
 
   return <iframe
     className={styles.iframe}
     src={iframeURL}
-    width={width}
-    height={height}
   />;
 }
 
@@ -46,7 +39,7 @@ export default function GameIframe({ gameData }: { gameData: GameData }) {
 
   return (
     <>
-      {!isClicked && <Button gameData={gameData} onButtonClick={handleClick} />}
+      {!isClicked && <Button onButtonClick={handleClick} />}
       <Iframe gameData={gameData} />
     </>
   );

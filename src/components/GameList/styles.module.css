@@ -46,12 +46,6 @@
   line-height: 1.4;
 }
 
-.games .list .item .size {
-  font-size: 0.7rem;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
-}
-
 .games .list .item .date {
   color: var(--color-text-secondary);
 }
@@ -65,4 +59,3 @@
 .games .list .item .date svg {
   margin-right: 0.25rem;
 }
-

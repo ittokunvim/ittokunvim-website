@@ -1,6 +1,5 @@
 import { formatDate } from "./utils";
 
-const PICTURESITE_URL = process.env.PICTURESITE_URL || "";
 const PICTURESITE_JSON_URL = process.env.PICTURESITE_JSON_URL || "";
 
 // 外部の写真サイトから取得するJSONデータの型定義
@@ -49,7 +48,7 @@ export async function getPictureDataAll(): Promise<PictureData[]> {
   // JSONデータを実際のURL形式に変換
   return pictureList.map((picture: JsonData) => ({
     // 相対パスを絶対URLに変換
-    path: new URL(picture.path, PICTURESITE_URL).toString(),
+    path: picture.path,
     description: picture.description,
     createdAt: formatDate(picture.createdAt),
   }));

@@ -39,7 +39,7 @@ export async function generateStaticParams() {
 export default async function Page({ params }: Props) {
   const { slug } = await params;
   const game: GameData = await getGameData(slug);
-  const { title, description, size, createdAt, updatedAt } = game;
+  const { title, description, createdAt, updatedAt } = game;
   const jsonLd: JsonLd = {
     name: title,
     description,
@@ -61,10 +61,6 @@ export default async function Page({ params }: Props) {
             <tr>
               <th>タイトル</th>
               <td>{title}</td>
-            </tr>
-            <tr>
-              <th>画面サイズ</th>
-              <td>{size.split("x").join(" x ")}</td>
             </tr>
             <tr>
               <th>作成日時</th>
