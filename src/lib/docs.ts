@@ -36,8 +36,16 @@ export type DocContentData = {
   updatedAt: string;
 };
 
+function hasDataSourceUrl(): boolean {
+  return DOCSSITE_JSON_URL.trim().length > 0;
+}
+
 // 外部の記事サイトのJSONデータを取得して解析する
 async function fetchDocsJson(): Promise<JsonData[]> {
+  if (!hasDataSourceUrl()) {
+    return [];
+  }
+
   try {
     // JSONデータを取得
     const response = await fetch(DOCSSITE_JSON_URL, { cache: "force-cache" });
@@ -48,7 +56,7 @@ async function fetchDocsJson(): Promise<JsonData[]> {
 
     // データを解析し、公開データのみを返す
     const data: JsonData[] = await response.json();
-    return data.filter(item => item.published);
+    return data.filter((item) => item.published);
   } catch (error) {
     console.error(error);
     return [];

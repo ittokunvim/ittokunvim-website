@@ -37,7 +37,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   const docSlugs = await getDocSlugAll();
-  return docSlugs.map((slug) => ({ slug: slug }));
+  const slugs = docSlugs.length > 0 ? docSlugs : ["sample"];
+
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function Page({ params }: Props) {

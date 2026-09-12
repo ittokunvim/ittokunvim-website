@@ -21,11 +21,19 @@ export type PictureData = {
  *
  * @returns 写真データの配列。取得失敗時は空配列を返す
  */
+function hasDataSourceUrl(): boolean {
+  return PICTURESITE_JSON_URL.trim().length > 0;
+}
+
 async function fetchPicturesJson(): Promise<JsonData[]> {
+  if (!hasDataSourceUrl()) {
+    return [];
+  }
+
   try {
     const response = await fetch(PICTURESITE_JSON_URL, { cache: "force-cache" });
     const data = await response.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error(error);
     return [];
@@ -64,7 +72,7 @@ export async function getPictureDataAll(): Promise<PictureData[]> {
  * getMonthRange("2026-01", "2026-08")
  * // => ["2026年1月", "2026年2月", "2026年3月", ..., "2026年8月"]
  */
-export function getMonthRange(min_month: string, max_month: string): string[] {
+export function getMonthRange(minMonth: string, maxMonth: string): string[] {
   const months: string[] = [];
 
   // "YYYY-MM" 形式の文字列をパースする
@@ -73,24 +81,26 @@ export function getMonthRange(min_month: string, max_month: string): string[] {
     // 無効な形式の場合はエラーをスロー
     if (!match) throw new Error(`Invalid month format: ${str}`);
     return {
-      year: parseInt(match[1]),
-      month: parseInt(match[2])
+      year: Number.parseInt(match[1], 10),
+      month: Number.parseInt(match[2], 10),
     };
   };
 
-  const minDate = parseYearMonth(min_month);
-  const maxDate = parseYearMonth(max_month);
+  const minDate = parseYearMonth(minMonth);
+  const maxDate = parseYearMonth(maxMonth);
 
   // 開始年月から終了年月までループ
-  let current = new Date(minDate.year, minDate.month - 1, 1);
+  const current = new Date(minDate.year, minDate.month - 1, 1);
   const max = new Date(maxDate.year, maxDate.month, 1);
 
-  while (current < max) {
-    const year = current.getFullYear();
-    const month = current.getMonth() + 1;
+  let cursor = new Date(current);
+
+  while (cursor < max) {
+    const year = cursor.getFullYear();
+    const month = cursor.getMonth() + 1;
     // "YYYY年M月" 形式で配列に追加
     months.push(`${year}年${month}月`);
-    current.setMonth(current.getMonth() + 1);
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
   }
 
   return months;

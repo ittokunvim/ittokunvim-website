@@ -19,11 +19,19 @@ export type GameData = {
   updatedAt: string;
 };
 
+function hasDataSourceUrl(): boolean {
+  return GAMESITE_JSON_URL.trim().length > 0;
+}
+
 async function fetchGamesJson(): Promise<JsonData[]> {
+  if (!hasDataSourceUrl()) {
+    return [];
+  }
+
   try {
     const response = await fetch(GAMESITE_JSON_URL, { cache: "force-cache" });
     const data = await response.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error(error);
     return [];
@@ -32,30 +40,27 @@ async function fetchGamesJson(): Promise<JsonData[]> {
 
 export async function getGameDataAll(): Promise<GameData[]> {
   const games = await fetchGamesJson();
-  let gameDataList: GameData[] = [{
-    slug: "",
-    title: "",
-    description: "",
-    createdAt: "",
-    updatedAt: "",
-  }];
+  if (games.length === 0) {
+    return [];
+  }
 
-  games.sort((a: JsonData, b: JsonData) => {
-    if (a.updatedAt === b.updatedAt) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    } else {
+  const gameDataList = games
+    .slice()
+    .sort((a: JsonData, b: JsonData) => {
+      if (a.updatedAt === b.updatedAt) {
+        return a.createdAt < b.createdAt ? 1 : -1;
+      }
       return a.updatedAt < b.updatedAt ? 1 : -1;
-    }
-  });
-  gameDataList = games.map((game: JsonData) => {
-    const slug = game.slug;
-    const title = game.title;
-    const description = game.description;
-    const createdAt = formatDate(game.createdAt);
-    const updatedAt = formatDate(game.updatedAt);
+    })
+    .map((game: JsonData) => {
+      const slug = game.slug;
+      const title = game.title;
+      const description = game.description;
+      const createdAt = formatDate(game.createdAt);
+      const updatedAt = formatDate(game.updatedAt);
 
-    return { slug, title, description, createdAt, updatedAt };
-  });
+      return { slug, title, description, createdAt, updatedAt };
+    });
 
   return gameDataList;
 }

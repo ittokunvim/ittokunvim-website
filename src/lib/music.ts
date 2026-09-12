@@ -19,11 +19,19 @@ export type MusicData = {
   createdAt: string;
 };
 
+function hasDataSourceUrl(): boolean {
+  return MUSICSITE_JSON_URL.trim().length > 0;
+}
+
 async function fetchMusicJson(): Promise<JsonData[]> {
+  if (!hasDataSourceUrl()) {
+    return [];
+  }
+
   try {
     const response = await fetch(MUSICSITE_JSON_URL, { cache: "force-cache" });
     const data = await response.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error(error);
     return [];

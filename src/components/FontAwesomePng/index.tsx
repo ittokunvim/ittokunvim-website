@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { iconLibrary } from "@/lib/fontawesome";
 import SearchIcon from "./SearchIcon";
@@ -22,10 +22,9 @@ export default function FontAwesomePng() {
   };
   const updateOptionAction = (iconOption: IconOption) => {
     setIconOption(iconOption);
-    renderCanvasAction();
   };
 
-  const renderCanvasAction = useCallback(() => {
+  useEffect(() => {
     const svg = svgRef.current;
     const canvas = canvasRef.current;
 
@@ -36,10 +35,7 @@ export default function FontAwesomePng() {
     }
 
     renderSvgToCanvas(svg, canvas, iconOption);
-  }, [iconOption]);
-  useEffect(() => {
-    renderCanvasAction();
-  }, [iconData, renderCanvasAction]);
+  }, [iconData, iconOption]);
 
   const handleClickDownload = () => {
     const link = linkRef.current;
