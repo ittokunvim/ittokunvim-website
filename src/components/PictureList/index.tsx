@@ -14,10 +14,10 @@ type Props = {
   route: string;
 };
 
-const PICTURESITE_URL = process.env.NEXT_PUBLIC_PICTURESITE_URL || "";
+const PICTURE_SITE_URL = process.env.NEXT_PUBLIC_PICTURESITE_URL || "";
 
 const imageLoader = ({ src, width, quality }: ImageLoaderProps): string => {
-  const url = new URL(src, PICTURESITE_URL);
+  const url = new URL(src, PICTURE_SITE_URL);
   url.searchParams.set("format", "auto");
   url.searchParams.set("width", width.toString());
   url.searchParams.set("quality", (quality || 75).toString());

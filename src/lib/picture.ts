@@ -1,9 +1,9 @@
 import { formatDate } from "./utils";
 
-const PICTURESITE_JSON_URL = process.env.PICTURESITE_JSON_URL || "";
+const PICTURE_SITE_JSON_URL = process.env.PICTURESITE_JSON_URL || "";
 
 // 外部の写真サイトから取得するJSONデータの型定義
-type JsonData = {
+type PictureJsonData = {
   path: string;
   description: string;
   createdAt: string;
@@ -21,18 +21,18 @@ export type PictureData = {
  *
  * @returns 写真データの配列。取得失敗時は空配列を返す
  */
-function hasDataSourceUrl(): boolean {
-  return PICTURESITE_JSON_URL.trim().length > 0;
+function hasPictureJsonUrl(): boolean {
+  return PICTURE_SITE_JSON_URL.trim().length > 0;
 }
 
-async function fetchPicturesJson(): Promise<JsonData[]> {
-  if (!hasDataSourceUrl()) {
+async function fetchPicturesJson(): Promise<PictureJsonData[]> {
+  if (!hasPictureJsonUrl()) {
     // 静的ビルド時などに URL が未設定でも Invalid URL を発生させない
     return [];
   }
 
   try {
-    const response = await fetch(PICTURESITE_JSON_URL, { cache: "force-cache" });
+    const response = await fetch(PICTURE_SITE_JSON_URL, { cache: "force-cache" });
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
@@ -46,7 +46,7 @@ async function fetchPicturesJson(): Promise<JsonData[]> {
  *
  * @returns 変換されたPictureData の配列
  */
-export async function getPictureDataAll(): Promise<PictureData[]> {
+export async function getAllPictures(): Promise<PictureData[]> {
   const pictureList = await fetchPicturesJson();
 
   // 配列が空の場合は空配列を返す
@@ -55,7 +55,7 @@ export async function getPictureDataAll(): Promise<PictureData[]> {
   }
 
   // JSONデータをアプリケーション内で使用する形式に変換
-  return pictureList.map((picture: JsonData) => ({
+  return pictureList.map((picture: PictureJsonData) => ({
     path: picture.path,
     description: picture.description,
     createdAt: formatDate(picture.createdAt),
@@ -65,8 +65,8 @@ export async function getPictureDataAll(): Promise<PictureData[]> {
 /**
  * 指定した年月の範囲内のすべての年月を文字列の配列で返す
  *
- * @param min_month 開始年月 (形式: "YYYY-MM")
- * @param max_month 終了年月 (形式: "YYYY-MM")
+ * @param minMonth 開始年月 (形式: "YYYY-MM")
+ * @param maxMonth 終了年月 (形式: "YYYY-MM")
  * @returns 年月文字列の配列 (形式: "YYYY年M月")
  *
  * @example

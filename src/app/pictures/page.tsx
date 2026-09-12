@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { MetadataProps, setMetadata } from "@/lib/utils";
-import { PictureData, getPictureDataAll } from "@/lib/picture";
+import { PictureData, getAllPictures } from "@/lib/picture";
 import PictureList from "@/components/PictureList";
 import { JsonLd, JsonLdScript } from "@/components/JsonLdScript";
 
@@ -28,7 +28,7 @@ export const metadata: Metadata = setMetadata(metadataProps);
 
 export default async function Page() {
   // 写真データを取得
-  const pictures: PictureData[] = await getPictureDataAll();
+  const pictures: PictureData[] = await getAllPictures();
 
   // JSON-LD スキーマデータ
   const jsonLd: JsonLd = {

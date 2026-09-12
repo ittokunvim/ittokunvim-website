@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { MetadataProps, setMetadata } from "@/lib/utils";
-import { MusicData, getMusicDataAll } from "@/lib/music";
+import { MusicData, getAllMusic } from "@/lib/music";
 import MusicList from "@/components/MusicList";
 import { JsonLd, JsonLdScript } from "@/components/JsonLdScript";
 
@@ -21,7 +21,7 @@ const metadataProps: MetadataProps = {
 export const metadata: Metadata = setMetadata(metadataProps);
 
 export default async function Page() {
-  const music: MusicData[] = await getMusicDataAll();
+  const music: MusicData[] = await getAllMusic();
   const jsonLd: JsonLd = {
     name,
     description,

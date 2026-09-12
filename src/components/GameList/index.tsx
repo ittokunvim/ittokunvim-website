@@ -7,10 +7,10 @@ import { faGamepad, faClock } from "@fortawesome/free-solid-svg-icons";
 import { GameData } from "@/lib/games";
 import styles from "./styles.module.css";
 
-const GAMESITE_URL = process.env.NEXT_PUBLIC_GAMESITE_URL || "";
+const GAME_SITE_URL = process.env.NEXT_PUBLIC_GAMESITE_URL || "";
 
 const imageLoader = ({ src, width, quality, }: ImageLoaderProps): string => {
-  const url = new URL(src, GAMESITE_URL);
+  const url = new URL(src, GAME_SITE_URL);
   url.searchParams.set("format", "auto");
   url.searchParams.set("width", width.toString());
   url.searchParams.set("quality", (quality || 75).toString());
