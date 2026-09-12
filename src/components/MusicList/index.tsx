@@ -17,6 +17,7 @@ export default function MusicList({ music, route }: Props) {
   const [musicList, setMusicList] = useState<MusicData[]>(music);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  // audio.src は render 中に参照できないため、表示用に再生中のパスを state でも保持する
   const [currentTrack, setCurrentTrack] = useState<string>("");
   const [volume, setVolume] = useState<number>(0);
   const [volumeOnce, setVolumeOnce] = useState<boolean>(false);
@@ -95,6 +96,7 @@ export default function MusicList({ music, route }: Props) {
       }
 
       // 音楽プレーヤーの終わりの音量を徐々に下げる
+      // duration から逆算することで、曲の長さに関係なく最後の5秒をフェードアウトする
       const fadeOutStart = Math.max(0, duration - fadingDuration);
       if (nowTime > fadeOutStart) {
         const nextVolume = Math.max(0.0, ((duration - nowTime) / fadingDuration) * maxVolume);
@@ -119,6 +121,7 @@ export default function MusicList({ music, route }: Props) {
       return;
     }
 
+    // 空白を任意文字列に置換し、単語間に空白がある検索にも対応する
     const normalizedTitle = title.split(" ").join("*").toLowerCase();
     const normalizedArtist = artist.split(" ").join("*").toLowerCase();
 

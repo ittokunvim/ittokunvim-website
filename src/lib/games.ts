@@ -25,6 +25,7 @@ function hasDataSourceUrl(): boolean {
 
 async function fetchGamesJson(): Promise<JsonData[]> {
   if (!hasDataSourceUrl()) {
+    // 静的ビルド時などに URL が未設定でも Invalid URL を発生させない
     return [];
   }
 
