@@ -45,9 +45,8 @@ export async function getPictureDataAll(): Promise<PictureData[]> {
     return [];
   }
 
-  // JSONデータを実際のURL形式に変換
+  // JSONデータをアプリケーション内で使用する形式に変換
   return pictureList.map((picture: JsonData) => ({
-    // 相対パスを絶対URLに変換
     path: picture.path,
     description: picture.description,
     createdAt: formatDate(picture.createdAt),
