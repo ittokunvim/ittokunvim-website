@@ -36,7 +36,6 @@ export default function GameList(props: { games: GameData[] }) {
               <Link href={`/games/${game.slug}`}>{game.title}</Link>
             </div>
             <div className={styles.description}>{game.description}</div>
-            <div className={styles.size}>{`Screen Size: ${game.size}`}</div>
             <div className={styles.date}>
               <p>
                 <FontAwesomeIcon icon={faClock} />

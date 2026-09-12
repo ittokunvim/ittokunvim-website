@@ -1,8 +1,9 @@
 .button {
   width: 100%;
+  min-height: 480px;
   display: inline-flex;
   position: absolute;
-  left: 0;
+  inset: 0;
   justify-content: center;
   align-items: center;
   background-color: var(--color-background-tertiary);
@@ -29,6 +30,7 @@
 
 .iframe {
   width: 100%;
+  min-height: 480px;
+  aspect-ratio: 16 / 9;
   border: none;
 }
-

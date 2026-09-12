@@ -56,7 +56,7 @@ export default async function Home() {
           自己紹介
         </h3>
         <div className={styles.profile}>
-          <Image src={iconPng} alt="My icon" />
+          <Image src={iconPng} alt="My icon" priority />
           <div className={styles.text}>
             <p>
               ittokunvimです。

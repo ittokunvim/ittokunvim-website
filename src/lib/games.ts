@@ -7,7 +7,6 @@ type JsonData = {
   slug: string;
   title: string;
   description: string;
-  size: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -16,7 +15,6 @@ export type GameData = {
   slug: string;
   title: string;
   description: string;
-  size: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -38,7 +36,6 @@ export async function getGameDataAll(): Promise<GameData[]> {
     slug: "",
     title: "",
     description: "",
-    size: "",
     createdAt: "",
     updatedAt: "",
   }];
@@ -54,11 +51,10 @@ export async function getGameDataAll(): Promise<GameData[]> {
     const slug = game.slug;
     const title = game.title;
     const description = game.description;
-    const size = game.size;
     const createdAt = formatDate(game.createdAt);
     const updatedAt = formatDate(game.updatedAt);
 
-    return { slug, title, description, size, createdAt, updatedAt };
+    return { slug, title, description, createdAt, updatedAt };
   });
 
   return gameDataList;
@@ -76,7 +72,6 @@ export async function getGameData(slug: string): Promise<GameData> {
     slug: "",
     title: "",
     description: "",
-    size: "",
     createdAt: "",
     updatedAt: "",
   };
@@ -88,10 +83,8 @@ export async function getGameData(slug: string): Promise<GameData> {
   gameData.slug = game.slug;
   gameData.title = game.title;
   gameData.description = game.description;
-  gameData.size = game.size;
   gameData.createdAt = formatDate(game.createdAt);
   gameData.updatedAt = formatDate(game.updatedAt);
 
   return gameData;
 }
-
