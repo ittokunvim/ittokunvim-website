@@ -6,7 +6,7 @@ import { faCirclePlay } from "@fortawesome/free-regular-svg-icons";
 import { GameData } from "@/lib/games";
 import styles from "./styles.module.css";
 
-const GAMESITE_URL = process.env.NEXT_PUBLIC_GAMESITE_URL;
+const GAME_SITE_URL = process.env.NEXT_PUBLIC_GAMESITE_URL;
 
 type ButtonProps = {
   onButtonClick: () => void;
@@ -25,7 +25,7 @@ function Button({ onButtonClick }: ButtonProps) {
 
 function Iframe({ gameData }: { gameData: GameData }) {
   const { slug } = gameData;
-  const iframeURL = GAMESITE_URL + "/" + slug;
+  const iframeURL = GAME_SITE_URL + "/" + slug;
 
   return <iframe
     className={styles.iframe}

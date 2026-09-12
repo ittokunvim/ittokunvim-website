@@ -15,39 +15,41 @@ type Props = {
 
 export function SearchForm({ searchMusic }: Props) {
   const createdAtList = () => {
-    const list = [];
+    const list: string[] = [];
     const [start, end] = [2000, 2025];
-    for (let i=start; i<=end; i++) {
+    for (let i = start; i <= end; i++) {
       list.unshift(`${i}年`);
     }
     list.unshift("");
     return list;
   };
-  const [searchValue, setSearchValue] = useState<SearchData>({
-    title: "",
-    artist: "",
-    createdAt: "",
-  });
   const [inputTitleValue, setInputTitleValue] = useState<string>("");
   const [inputArtistValue, setInputArtistValue] = useState<string>("");
   const [inputCreatedAtValue, setInputCreatedAtValue] = useState<string>("");
+
   const handleInputTitleChange = (value: string) => {
     setInputTitleValue(value);
-    searchValue.title = value;
-    setSearchValue(searchValue);
-    searchMusic(searchValue);
+    searchMusic({
+      title: value,
+      artist: inputArtistValue,
+      createdAt: inputCreatedAtValue,
+    });
   };
   const handleInputArtistChange = (value: string) => {
     setInputArtistValue(value);
-    searchValue.artist = value;
-    setSearchValue(searchValue);
-    searchMusic(searchValue);
+    searchMusic({
+      title: inputTitleValue,
+      artist: value,
+      createdAt: inputCreatedAtValue,
+    });
   };
   const handleInputCreatedAtChange = (value: string) => {
     setInputCreatedAtValue(value);
-    searchValue.createdAt = value;
-    setSearchValue(searchValue);
-    searchMusic(searchValue);
+    searchMusic({
+      title: inputTitleValue,
+      artist: inputArtistValue,
+      createdAt: value,
+    });
   };
 
   return (

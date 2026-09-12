@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMusic, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { MusicData } from "@/lib/music";
@@ -15,51 +15,55 @@ type Props = {
 
 export default function MusicList({ music, route }: Props) {
   const [musicList, setMusicList] = useState<MusicData[]>(music);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  // audio.src は render 中に参照できないため、表示用に再生中のパスを state でも保持する
+  const [currentTrack, setCurrentTrack] = useState<string>("");
   const [volume, setVolume] = useState<number>(0);
   const [volumeOnce, setVolumeOnce] = useState<boolean>(false);
 
   // 音楽プレーヤーのセットアップ
   useEffect(() => {
-    setAudio(new Audio());
+    audioRef.current = new Audio();
   }, []);
 
   // 再生ボタン押下時の初期化と再生と停止
   const handleClick = (path: string) => {
+    const audio = audioRef.current;
     if (!audio) {
       return;
     }
 
+    const isSameTrack = currentTrack === path && isPlaying;
     audio.src = path;
     audio.volume = 0;
     setVolume(0);
     setVolumeOnce(false);
 
-    if (!isPlaying) {
-      setIsPlaying(true);
-      audio.play();
-    } else {
+    if (isSameTrack) {
+      setCurrentTrack("");
       setIsPlaying(false);
       audio.pause();
+      return;
     }
+
+    setCurrentTrack(path);
+    setIsPlaying(true);
+    void audio.play();
   };
 
   // 音楽プレーヤーの状態に応じて表示するアイコンを変更
   const toggleIcon = (path: string) => {
-    if (!audio) {
-      return faPlay;
+    if (isPlaying && currentTrack === path) {
+      return faPause;
     }
 
-    if (isPlaying && audio.src === encodeURI(path)) {
-      return faPause;
-    } else {
-      return faPlay;
-    }
+    return faPlay;
   };
 
   // 音楽プレーヤーの初めと終わりの音量を徐々に調節する
   useEffect(() => {
+    const audio = audioRef.current;
     if (!isPlaying || !audio) {
       return;
     }
@@ -71,7 +75,8 @@ export default function MusicList({ music, route }: Props) {
     const interval = setInterval(() => {
       // 音楽プレーヤーの再生が終わったら終了
       if (audio.paused || audio.ended) {
-        return clearInterval(interval);
+        clearInterval(interval);
+        return;
       }
 
       const nowTime = audio.currentTime;
@@ -91,6 +96,7 @@ export default function MusicList({ music, route }: Props) {
       }
 
       // 音楽プレーヤーの終わりの音量を徐々に下げる
+      // duration から逆算することで、曲の長さに関係なく最後の5秒をフェードアウトする
       const fadeOutStart = Math.max(0, duration - fadingDuration);
       if (nowTime > fadeOutStart) {
         const nextVolume = Math.max(0.0, ((duration - nowTime) / fadingDuration) * maxVolume);
@@ -106,26 +112,28 @@ export default function MusicList({ music, route }: Props) {
     }, tickMs);
 
     return () => clearInterval(interval);
-  }, [isPlaying, audio, volume]);
+  }, [isPlaying, volumeOnce, volume]);
 
   // 検索フォーム文字入力時に結果をHTMLで出力する
   const searchMusic = ({ title, artist, createdAt }: SearchData) => {
     if (title === "" && artist === "" && createdAt === "") {
       setMusicList(music);
+      return;
     }
 
-    title = title.split(" ").join("*").toLowerCase();
-    artist = artist.split(" ").join("*").toLowerCase();
+    // 空白を任意文字列に置換し、単語間に空白がある検索にも対応する
+    const normalizedTitle = title.split(" ").join("*").toLowerCase();
+    const normalizedArtist = artist.split(" ").join("*").toLowerCase();
 
-    const titleRegex = new RegExp(title, "i");
-    const artistRegex = new RegExp(artist, "i");
+    const titleRegex = new RegExp(normalizedTitle, "i");
+    const artistRegex = new RegExp(normalizedArtist, "i");
     const createdAtRegex = new RegExp(createdAt, "i");
 
-    const searchMusicList = music.filter((music) => {
-      const isTitleTest = titleRegex.test(music.title);
-      const isArtistTest = artistRegex.test(music.artist);
-      const isCreatedAtTest = createdAtRegex.test(music.createdAt);
-      return (isTitleTest && isArtistTest && isCreatedAtTest);
+    const searchMusicList = music.filter((musicEntry) => {
+      const isTitleTest = titleRegex.test(musicEntry.title);
+      const isArtistTest = artistRegex.test(musicEntry.artist);
+      const isCreatedAtTest = createdAtRegex.test(musicEntry.createdAt);
+      return isTitleTest && isArtistTest && isCreatedAtTest;
     });
 
     setMusicList(searchMusicList);
@@ -141,17 +149,17 @@ export default function MusicList({ music, route }: Props) {
         <SearchForm searchMusic={searchMusic} />
       )}
       <div className={styles.list}>
-        {musicList.map((music) => (
-          <div className={styles.item} key={music.title}>
-            <div className={styles.title} onClick={() => handleClick(music.path)}>
-              <FontAwesomeIcon icon={toggleIcon(music.path)} />
-              {music.title}
+        {musicList.map((musicEntry) => (
+          <div className={styles.item} key={musicEntry.title}>
+            <div className={styles.title} onClick={() => handleClick(musicEntry.path)}>
+              <FontAwesomeIcon icon={toggleIcon(musicEntry.path)} />
+              {musicEntry.title}
             </div>
-            <div className={styles.artist}>{music.artist}</div>
-            <div className={styles.createdAt}>{music.createdAt}に作成</div>
+            <div className={styles.artist}>{musicEntry.artist}</div>
+            <div className={styles.createdAt}>{musicEntry.createdAt}に作成</div>
             <details className={styles.references}>
               <summary>参考リンク</summary>
-              {music.references.map((reference) => (
+              {musicEntry.references.map((reference) => (
                 <a
                   key={reference}
                   href={reference}

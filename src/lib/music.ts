@@ -1,9 +1,9 @@
 import { formatYear } from "@/lib/utils";
 
-const MUSICSITE_URL = process.env.MUSICSITE_URL || "";
-const MUSICSITE_JSON_URL = process.env.MUSICSITE_JSON_URL || "";
+const MUSIC_SITE_URL = process.env.MUSICSITE_URL || "";
+const MUSIC_SITE_JSON_URL = process.env.MUSICSITE_JSON_URL || "";
 
-type JsonData = {
+type MusicJsonData = {
   path: string;
   title: string;
   artist: string;
@@ -19,18 +19,27 @@ export type MusicData = {
   createdAt: string;
 };
 
-async function fetchMusicJson(): Promise<JsonData[]> {
+function hasMusicJsonUrl(): boolean {
+  return MUSIC_SITE_JSON_URL.trim().length > 0;
+}
+
+async function fetchMusicJson(): Promise<MusicJsonData[]> {
+  if (!hasMusicJsonUrl()) {
+    // 静的ビルド時などに URL が未設定でも Invalid URL を発生させない
+    return [];
+  }
+
   try {
-    const response = await fetch(MUSICSITE_JSON_URL, { cache: "force-cache" });
+    const response = await fetch(MUSIC_SITE_JSON_URL, { cache: "force-cache" });
     const data = await response.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error(error);
     return [];
   }
 }
 
-export async function getMusicDataAll(): Promise<MusicData[]> {
+export async function getAllMusic(): Promise<MusicData[]> {
   const musicList = await fetchMusicJson();
   let musicDataList: MusicData[] = [{
     title: "",
@@ -40,14 +49,10 @@ export async function getMusicDataAll(): Promise<MusicData[]> {
     createdAt: "",
   }];
 
-  if (musicList === undefined) {
-    return musicDataList;
-  }
-
-  musicDataList = musicList.map((music: JsonData) => {
+  musicDataList = musicList.map((music: MusicJsonData) => {
     const title = music.title;
     const artist = music.artist;
-    const path = new URL(music.path, MUSICSITE_URL).toString();
+    const path = new URL(music.path, MUSIC_SITE_URL).toString();
     const references = music.references;
     const createdAt = formatYear(music.createdAt);
 

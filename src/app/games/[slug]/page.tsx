@@ -33,7 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   const gameSlugs = await getGameSlugAll();
-  return gameSlugs.map((slug) => ({ slug: slug }));
+  // 外部データが未設定でも output: "export" のビルドが空ルートで失敗しないようにする
+  const slugs = gameSlugs.length > 0
+    ? gameSlugs
+    : ["sample"];
+
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function Page({ params }: Props) {

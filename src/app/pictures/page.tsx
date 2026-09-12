@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { MetadataProps, setMetadata } from "@/lib/utils";
-import { PictureData, getPictureDataAll } from "@/lib/picture";
+import { PictureData, getAllPictures } from "@/lib/picture";
 import PictureList from "@/components/PictureList";
 import { JsonLd, JsonLdScript } from "@/components/JsonLdScript";
 
@@ -27,30 +27,19 @@ const metadataProps: MetadataProps = {
 export const metadata: Metadata = setMetadata(metadataProps);
 
 export default async function Page() {
-  try {
-    // 写真データを取得
-    const pictures: PictureData[] = await getPictureDataAll();
+  // 写真データを取得
+  const pictures: PictureData[] = await getAllPictures();
 
-    // JSON-LD スキーマデータ
-    const jsonLd: JsonLd = {
-      name: PAGE_CONFIG.title,
-      description: PAGE_CONFIG.description,
-    };
+  // JSON-LD スキーマデータ
+  const jsonLd: JsonLd = {
+    name: PAGE_CONFIG.title,
+    description: PAGE_CONFIG.description,
+  };
 
-    return (
-      <main className={styles.main}>
-        <PictureList pictures={pictures} route={PAGE_CONFIG.route} />
-        <JsonLdScript data={jsonLd} />
-      </main>
-    );
-  } catch (error) {
-    console.error("Failed to fetch pictures:", error);
-
-    // エラーが発生した場合は空のリストを表示
-    return (
-      <main className={styles.main}>
-        <PictureList pictures={[]} route={PAGE_CONFIG.route} />
-      </main>
-    );
-  }
+  return (
+    <main className={styles.main}>
+      <PictureList pictures={pictures} route={PAGE_CONFIG.route} />
+      <JsonLdScript data={jsonLd} />
+    </main>
+  );
 }

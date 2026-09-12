@@ -4,10 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faAddressCard } from "@fortawesome/free-solid-svg-icons";
 
 import { getNewsListAll, NewsData } from "@/lib/news";
-import { DocData, getDocDataAll } from "@/lib/docs";
-import { GameData, getGameDataAll } from "@/lib/games";
-import { MusicData, getMusicDataAll } from "@/lib/music";
-import { PictureData, getPictureDataAll } from "@/lib/picture";
+import { DocData, getAllDocs } from "@/lib/docs";
+import { GameData, getAllGames } from "@/lib/games";
+import { MusicData, getAllMusic } from "@/lib/music";
+import { PictureData, getAllPictures } from "@/lib/picture";
 import { ToolData, getToolDataAll } from "@/lib/tools";
 
 import NewsList from "@/components/NewsList";
@@ -26,10 +26,10 @@ const DESCRIPTION = process.env.NEXT_PUBLIC_DESCRIPTION || "";
 
 export default async function Home() {
   const news: NewsData[] = getNewsListAll();
-  const docs: DocData[] = await getDocDataAll();
-  const games: GameData[] = await getGameDataAll();
-  const music: MusicData[] = await getMusicDataAll();
-  const pictures: PictureData[] = await getPictureDataAll();
+  const docs: DocData[] = await getAllDocs();
+  const games: GameData[] = await getAllGames();
+  const music: MusicData[] = await getAllMusic();
+  const pictures: PictureData[] = await getAllPictures();
   const tools: ToolData[] = getToolDataAll();
   const jsonLd: JsonLd = {
     name: SITENAME,

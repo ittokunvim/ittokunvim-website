@@ -7,10 +7,10 @@ import { rehype } from "rehype";
 import rehypeHighlight from "rehype-highlight";
 import { formatDate } from "@/lib/utils";
 
-const DOCSSITE_URL = process.env.DOCSSITE_URL || "";
-const DOCSSITE_JSON_URL = process.env.DOCSSITE_JSON_URL || "";
+const DOCS_SITE_URL = process.env.DOCSSITE_URL || "";
+const DOCS_SITE_JSON_URL = process.env.DOCSSITE_JSON_URL || "";
 
-type JsonData = {
+type DocJsonData = {
   slug: string;
   title: string;
   description: string,
@@ -36,19 +36,27 @@ export type DocContentData = {
   updatedAt: string;
 };
 
+function hasDocsJsonUrl(): boolean {
+  return DOCS_SITE_JSON_URL.trim().length > 0;
+}
+
 // 外部の記事サイトのJSONデータを取得して解析する
-async function fetchDocsJson(): Promise<JsonData[]> {
+async function fetchDocsJson(): Promise<DocJsonData[]> {
+  if (!hasDocsJsonUrl()) {
+    return [];
+  }
+
   try {
     // JSONデータを取得
-    const response = await fetch(DOCSSITE_JSON_URL, { cache: "force-cache" });
+    const response = await fetch(DOCS_SITE_JSON_URL, { cache: "force-cache" });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
     }
 
     // データを解析し、公開データのみを返す
-    const data: JsonData[] = await response.json();
-    return data.filter(item => item.published);
+    const data: DocJsonData[] = await response.json();
+    return data.filter((item) => item.published);
   } catch (error) {
     console.error(error);
     return [];
@@ -56,7 +64,7 @@ async function fetchDocsJson(): Promise<JsonData[]> {
 }
 
 // 全てのドキュメントデータを取得・整形する
-export async function getDocDataAll(): Promise<DocData[]> {
+export async function getAllDocs(): Promise<DocData[]> {
   try {
     // JSONデータを取得
     const docs = await fetchDocsJson();
@@ -84,7 +92,7 @@ export async function getDocSlugAll(): Promise<string[]> {
     const docs = await fetchDocsJson();
 
     // `slug`の配列を返す
-    return docs.map((doc: JsonData) => doc.slug);
+    return docs.map((doc: DocJsonData) => doc.slug);
   } catch(error) {
     console.error("Error fetching document slugs:", error);
     return [];
@@ -92,15 +100,15 @@ export async function getDocSlugAll(): Promise<string[]> {
 }
 
 // 記事データをソートするための比較関数
-function compareDocsByDate(a: JsonData, b: JsonData): number {
+function compareDocsByDate(a: DocJsonData, b: DocJsonData): number {
   if (a.updatedAt === b.updatedAt) {
     return a.createdAt < b.createdAt ? 1 : -1;
   }
   return a.updatedAt < b.updatedAt ? 1 : -1;
 }
 
-// JsonDataをDocDataに整形する
-function formatDocData(doc: JsonData): DocData {
+// DocJsonDataをDocDataに整形する
+function formatDocData(doc: DocJsonData): DocData {
   return {
     href: `/docs/${doc.slug}`,
     title: doc.title,
@@ -117,7 +125,7 @@ export async function getDocData(slug: string): Promise<DocContentData> {
     const docs = await fetchDocsJson();
 
     // 指定した`slug`に対応する記事を検索
-    const doc = docs.find((doc: JsonData) => doc.slug === slug);
+    const doc = docs.find((doc: DocJsonData) => doc.slug === slug);
 
     // 該当する記事が見つからない場合はデフォルト値を返す
     if (!doc) {
@@ -144,7 +152,7 @@ function getDefaultDocContentData(): DocContentData {
 }
 
 // 記事データを整形する
-async function formatDocContentData(doc: JsonData): Promise<DocContentData> {
+async function formatDocContentData(doc: DocJsonData): Promise<DocContentData> {
   const contentHtml = await getDocContentHtml(doc.path);
 
   // HTMLコンテンツが空の場合はデフォルト値を返す
@@ -165,7 +173,7 @@ async function formatDocContentData(doc: JsonData): Promise<DocContentData> {
 async function getDocContentHtml(path: string): Promise<string> {
   try {
     // 指定されたパスを使用して絶対URLを生成
-    const absoluteUrl = new URL(path, DOCSSITE_URL);
+    const absoluteUrl = new URL(path, DOCS_SITE_URL);
 
     // コンテンツを取得
     const rawContent = await fetchContent(absoluteUrl.href);
@@ -222,7 +230,7 @@ async function enhanceHtml(content: string): Promise<string> {
 
 // 相対URLを絶対URLに変換する関数
 function replaceRelativeUrlToAbsoluteUrl(path: string, content: string): string {
-  const basePath = new URL(path, DOCSSITE_URL).href.replace(/[^/]+$/, "");
+  const basePath = new URL(path, DOCS_SITE_URL).href.replace(/[^/]+$/, "");
 
   // 相対画像リンクを絶対URLに変換
   const relativeImageRegex = /!?\[[^\]]+\]\((?!https|ftp:\/\/)[^\)]+\)/g;
@@ -248,4 +256,3 @@ function replaceCodeBlockTitle(content: string): string {
     return `\`\`\`${lang} title="${filename}"`;
   });
 }
-
