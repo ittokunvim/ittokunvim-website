@@ -1,3 +1,16 @@
 .container {
-  background-color: red;
+  /* display: grid; */
+  /* grid-template-columns: repeat(); */
+
+}
+
+.image {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border-primary);
+}
+
+.image img {
+  object-fit: cover;
+  object-position: left -72px;
+  border: 1px solid var(--color-border-primary);
 }
