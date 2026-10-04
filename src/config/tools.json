@@ -22,5 +22,11 @@
     "name": "FontAwesome画像変換ツール",
     "description": "FontAwesomeアイコンを画像に変換するツールです",
     "createdAt": "2025-04-29"
+  },
+  {
+    "slug": "discup2-reelseigyo",
+    "name": "ディスクアップ2 - リール制御アプリ",
+    "description": "ディスクアップ2の成立役を特定するツールです",
+    "createdAt": "2026-10-04"
   }
 ]
