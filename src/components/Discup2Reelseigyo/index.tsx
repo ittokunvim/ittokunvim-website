@@ -46,13 +46,18 @@ const SUBERI_VALUES = [
 ] as const;
 
 export default function Discup2Reelseigyo() {
-  const zugara_height = IMAGE_HEIGHT / 21;
-  const imageHeight = zugara_height * 3;
+  const zugaraHeight = IMAGE_HEIGHT / 21;
+  const imageWindowHeight = zugaraHeight * 3;
 
   const [reelValue, setReelValue] = useState<ReelData>({
     zugara: ZUGARA_VALUES[0],
     suberi: SUBERI_VALUES[0],
   });
+  let reelIndex = getReelIndex(reelValue);
+
+  const zugaraPosition =
+    IMAGE_HEIGHT - zugaraHeight * 3 + ((21 - reelIndex[0]) % 21) * zugaraHeight;
+  let suberiPosition = zugaraPosition - zugaraHeight * reelIndex[1];
   const [resultValue, setResultValue] = useState(getResult(reelValue));
   const handleInputZugaraChange = useCallback(
     (value: string) => {
@@ -62,7 +67,6 @@ export default function Discup2Reelseigyo() {
     },
     [reelValue],
   );
-
   const handleInputSuberiChange = useCallback(
     (value: string) => {
       const newReelValue = { ...reelValue, suberi: value };
@@ -76,21 +80,33 @@ export default function Discup2Reelseigyo() {
     <div className={styles.container}>
       <div className={styles.image}>
         <div>押した位置</div>
-        <Image
-          src={ReelImage}
-          alt="discup2 reel image"
-          width={IMAGE_WIDTH}
-          height={imageHeight}
-        />
+        <div
+          className={styles.image_window}
+          style={{ height: imageWindowHeight }}
+        >
+          <div
+            className={styles.image_track}
+            style={{ height: zugaraPosition }}
+          >
+            <Image src={ReelImage} alt="discup2 reel image" />
+            <Image src={ReelImage} alt="discup2 reel image" />
+          </div>
+        </div>
       </div>
       <div className={styles.image}>
         <div>止まった位置</div>
-        <Image
-          src={ReelImage}
-          alt="discup2 reel image"
-          width={IMAGE_WIDTH}
-          height={imageHeight}
-        />
+        <div
+          className={styles.image_window}
+          style={{ height: imageWindowHeight }}
+        >
+          <div
+            className={styles.image_track}
+            style={{ height: suberiPosition }}
+          >
+            <Image src={ReelImage} alt="discup2 reel image" />
+            <Image src={ReelImage} alt="discup2 reel image" />
+          </div>
+        </div>
       </div>
       <select
         value={reelValue.zugara}
