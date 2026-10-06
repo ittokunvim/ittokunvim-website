@@ -12,6 +12,12 @@ type ReelData = {
   suberi: string;
 };
 
+type ResultData = {
+  type: number;
+  text: string;
+  color: string;
+};
+
 const IMAGE_WIDTH = 168;
 const IMAGE_HEIGHT = 1512;
 const ZUGARA_VALUES = [
@@ -82,14 +88,14 @@ export default function Discup2Reelseigyo() {
         <div>押した位置</div>
         <div
           className={styles.image_window}
-          style={{ height: imageWindowHeight }}
+          style={{ width: IMAGE_WIDTH, height: imageWindowHeight }}
         >
           <div
             className={styles.image_track}
             style={{ height: zugaraPosition }}
           >
-            <Image src={ReelImage} alt="discup2 reel image" />
-            <Image src={ReelImage} alt="discup2 reel image" />
+            <Image src={ReelImage} alt="discup2 reel image" loading="eager" />
+            <Image src={ReelImage} alt="discup2 reel image" loading="eager" />
           </div>
         </div>
       </div>
@@ -97,19 +103,21 @@ export default function Discup2Reelseigyo() {
         <div>止まった位置</div>
         <div
           className={styles.image_window}
-          style={{ height: imageWindowHeight }}
+          style={{ width: IMAGE_WIDTH, height: imageWindowHeight }}
         >
           <div
             className={styles.image_track}
             style={{ height: suberiPosition }}
           >
-            <Image src={ReelImage} alt="discup2 reel image" />
-            <Image src={ReelImage} alt="discup2 reel image" />
+            <Image src={ReelImage} alt="discup2 reel image" loading="eager" />
+            <Image src={ReelImage} alt="discup2 reel image" loading="eager" />
           </div>
         </div>
       </div>
       <select
+        className={styles.select}
         value={reelValue.zugara}
+        style={{ width: IMAGE_WIDTH }}
         onChange={(e) => handleInputZugaraChange(e.target.value)}
       >
         {ZUGARA_VALUES.map((zugara, i) => (
@@ -119,7 +127,9 @@ export default function Discup2Reelseigyo() {
         ))}
       </select>
       <select
+        className={styles.select}
         value={reelValue.suberi}
+        style={{ width: IMAGE_WIDTH }}
         onChange={(e) => handleInputSuberiChange(e.target.value)}
       >
         {SUBERI_VALUES.map((koma, i) => (
@@ -131,7 +141,7 @@ export default function Discup2Reelseigyo() {
       <div className={styles.result}>
         <ul>
           {resultValue.map((result, i) => (
-            <li key={i}>{result}</li>
+            <li key={i}>{result.text}</li>
           ))}
         </ul>
       </div>
@@ -139,125 +149,274 @@ export default function Discup2Reelseigyo() {
   );
 }
 
-function getResult(reel: ReelData): string[] {
-  let resultData = [];
+function getResult(reel: ReelData): ResultData[] {
+  let resultData: ResultData[] = [];
   let reelIndex = getReelIndex(reel);
   if (ReelJson.hazure[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("ハズレ");
+    resultData.push({
+      type: 0,
+      text: "ハズレ",
+      color: "gray",
+    });
   }
   if (ReelJson.normalReplay[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リプレイ");
+    resultData.push({
+      type: 1,
+      text: "リプレイ",
+      color: "blue",
+    });
   }
   if (ReelJson.redTenCoin[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("赤7頭10枚役");
+    resultData.push({
+      type: 1,
+      text: "赤7頭10枚役",
+      color: "red",
+    });
   }
   if (ReelJson.blueTenCoin[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("青7頭10枚役");
+    resultData.push({
+      type: 1,
+      text: "青7頭10枚役",
+      color: "blue",
+    });
   }
   if (ReelJson.barTenCoin[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("BAR頭10枚役");
+    resultData.push({
+      type: 1,
+      text: "BAR頭10枚役",
+      color: "black",
+    });
   }
   if (ReelJson.watermelonA[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("スイカA");
+    resultData.push({
+      type: 1,
+      text: "スイカA",
+      color: "green",
+    });
   }
   if (ReelJson.watermelonB[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("スイカB");
+    resultData.push({
+      type: 1,
+      text: "スイカB",
+      color: "green",
+    });
   }
   if (ReelJson.cherry[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("チェリー");
+    resultData.push({
+      type: 1,
+      text: "チェリー",
+      color: "pink",
+    });
   }
   if (ReelJson.singleWinRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("単独赤7");
+    resultData.push({
+      type: 2,
+      text: "単独赤7",
+      color: "red",
+    });
   }
   if (ReelJson.singleWinBlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("単独青7");
+    resultData.push({
+      type: 2,
+      text: "単独青7",
+      color: "blue",
+    });
   }
   if (ReelJson.singleWinBarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("単独BARビッグ");
+    resultData.push({
+      type: 2,
+      text: "単独BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.singleWinMixedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("単独異色");
+    resultData.push({
+      type: 2,
+      text: "単独異色",
+      color: "purple",
+    });
   }
   if (ReelJson.singleWinRegularBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("単独バケ");
+    resultData.push({
+      type: 3,
+      text: "単独バケ",
+      color: "gray",
+    });
   }
   if (ReelJson.watermelonABlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("青7、スイカA重複");
+    resultData.push({
+      type: 2,
+      text: "スイカA重複、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.watermelonABarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("BARビッグ、スイカA重複");
+    resultData.push({
+      type: 2,
+      text: "スイカA重複、BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.watermelonBRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("赤7、スイカB重複");
+    resultData.push({
+      type: 2,
+      text: "スイカB重複、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.reachReplayRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("特リプ、赤7");
+    resultData.push({
+      type: 2,
+      text: "特リプ、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.reachReplayBlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("特リプ、青7");
+    resultData.push({
+      type: 2,
+      text: "特リプ、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.reachRoleARedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役A、赤7");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役A、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.reachRoleABlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役A、青7");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役A、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.reachRoleABarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役A、BARビッグ");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役A、BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.reachRoleAMixedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役A、異色");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役A、異色",
+      color: "purple",
+    });
   }
   if (ReelJson.reachRoleBRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役B、赤7");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役B、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.reachRoleBBlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役B、青7");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役B、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.reachRoleBBarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役B、BARビッグ");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役B、BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.reachRoleBRegularBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役B、レギュラー");
+    resultData.push({
+      type: 3,
+      text: "リーチ目役B、レギュラー",
+      color: "gray",
+    });
   }
   if (ReelJson.reachRoleCRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役C、赤7");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役C、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.reachRoleCBlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役C、青7");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役C、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.reachRoleCBarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役C、BARビッグ");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役C、BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.reachRoleCRegularBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役C、レギュラー");
+    resultData.push({
+      type: 3,
+      text: "リーチ目役C、レギュラー",
+      color: "gray",
+    });
   }
   if (ReelJson.reachRoleDRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役D、赤7");
+    resultData.push({
+      type: 3,
+      text: "リーチ目役D、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.reachRoleDBlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役D、青7");
+    resultData.push({
+      type: 3,
+      text: "リーチ目役D、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.reachRoleDBarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役D、BARビッグ");
+    resultData.push({
+      type: 2,
+      text: "リーチ目役D、BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.reachRoleDRegularBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("リーチ目役D、レギュラー");
+    resultData.push({
+      type: 3,
+      text: "リーチ目役D、レギュラー",
+      color: "gray",
+    });
   }
   if (ReelJson.commonOneCoinRedBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("共通1枚役、赤7");
+    resultData.push({
+      type: 2,
+      text: "共通1枚役、赤7",
+      color: "red",
+    });
   }
   if (ReelJson.commonOneCoinBlueBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("共通1枚役、青7");
+    resultData.push({
+      type: 2,
+      text: "共通1枚役、青7",
+      color: "blue",
+    });
   }
   if (ReelJson.commonOneCoinBarBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("共通1枚役、BARビッグ");
+    resultData.push({
+      type: 2,
+      text: "共通1枚役、BARビッグ",
+      color: "black",
+    });
   }
   if (ReelJson.commonOneCoinRegularBonus[reelIndex[0]] == reelIndex[1]) {
-    resultData.push("共通1枚役、レギュラー");
-  }
-  if (resultData.length == 0) {
-    resultData.push("止まらず...");
+    resultData.push({
+      type: 3,
+      text: "共通1枚役、レギュラー",
+      color: "gray",
+    });
   }
   return resultData;
 }
