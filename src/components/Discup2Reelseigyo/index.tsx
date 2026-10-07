@@ -162,7 +162,7 @@ function Reel({ label, reelIndex, onReelIndexChange }: ReelProps) {
       <div className={styles.imageLabel}>{label}</div>
       <div
         className={`${styles.imageWindow} ${isDraggable ? styles.draggable : ""}`}
-        style={{ width: IMAGE_WIDTH, height: WINDOW_HEIGHT }}
+        style={{ maxWidth: IMAGE_WIDTH, height: WINDOW_HEIGHT }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerEnd}
