@@ -158,7 +158,7 @@ function Reel({ label, reelIndex, onReelIndexChange }: ReelProps) {
   };
 
   return (
-    <div className={styles.image}>
+    <div className={styles.image} style={{ maxWidth: IMAGE_WIDTH }}>
       <div className={styles.imageLabel}>{label}</div>
       <div
         className={`${styles.imageWindow} ${isDraggable ? styles.draggable : ""}`}
