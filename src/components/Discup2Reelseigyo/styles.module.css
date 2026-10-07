@@ -1,0 +1,85 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.image {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border-primary);
+}
+
+.imageLabel {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.imageWindow {
+  position: relative;
+  overflow: hidden;
+}
+
+.draggable {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
+
+.imageTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.imageTrack img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+.select {
+  max-width: 256px;
+}
+
+.result,
+.emptyResult {
+  grid-column: 1 / -1;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.result ul {
+  min-width: 200px;
+  padding: 0;
+  margin: 0;
+}
+
+.result li {
+  list-style: none;
+  word-break: break-word;
+}
+
+.hazure {
+  color: gray;
+}
+
+.koyaku {
+  color: dodgerblue;
+}
+
+.big {
+  color: orangered;
+}
+
+.regular {
+  color: forestgreen;
+}
