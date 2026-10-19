@@ -53,7 +53,8 @@ const SUBERI_VALUES = [
   "4すべり",
 ] as const;
 
-type ResultType = "hazure" | "koyaku" | "big" | "regular";
+type ResultType =
+  "hazure" | "koyaku" | "red" | "blue" | "black" | "regular" | "mixed";
 
 type ReelControl = {
   type: ResultType;
@@ -185,7 +186,10 @@ function ResultList({ results }: { results: readonly ReelControl[] }) {
   const resultTypes: readonly ResultType[] = [
     "hazure",
     "koyaku",
-    "big",
+    "red",
+    "blue",
+    "black",
+    "mixed",
     "regular",
   ];
 
@@ -199,9 +203,11 @@ function ResultList({ results }: { results: readonly ReelControl[] }) {
         const resultsByType = results.filter((result) => result.type === type);
 
         return resultsByType.length > 0 ? (
-          <ul key={type} className={styles[type]}>
+          <ul key={type}>
             {resultsByType.map((result) => (
-              <li key={result.text}>{result.text}</li>
+              <li key={result.text} className={styles[type]}>
+                {result.text}
+              </li>
             ))}
           </ul>
         ) : null;
