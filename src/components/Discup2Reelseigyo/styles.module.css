@@ -58,7 +58,6 @@
 }
 
 .result ul {
-  min-width: 200px;
   padding: 0;
   margin: 0;
 }
@@ -73,13 +72,25 @@
 }
 
 .koyaku {
+  color: sandybrown;
+}
+
+.red {
+  color: orangered;
+}
+
+.blue {
   color: dodgerblue;
 }
 
-.big {
-  color: orangered;
+.black {
+  color: black;
 }
 
 .regular {
   color: forestgreen;
+}
+
+.mixed {
+  color: darkorchid;
 }
