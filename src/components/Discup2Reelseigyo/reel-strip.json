@@ -27,7 +27,7 @@
     ]
   },
   "sb": {
-    "type": "koyaku",
+    "type": "hazure",
     "text": "SB",
     "suberi": [
       4,
@@ -270,7 +270,7 @@
     ]
   },
   "singleWinRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "単独赤7(4681.1)",
     "suberi": [
       3,
@@ -297,7 +297,7 @@
     ]
   },
   "singleWinBlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "単独青7(13107.2)",
     "suberi": [
       4,
@@ -324,7 +324,7 @@
     ]
   },
   "singleWinBarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "単独BARビッグ(6553.6)",
     "suberi": [
       3,
@@ -351,7 +351,7 @@
     ]
   },
   "singleWinMixedBonus": {
-    "type": "big",
+    "type": "mixed",
     "text": "単独異色(16384.0)",
     "suberi": [
       4,
@@ -405,7 +405,7 @@
     ]
   },
   "watermelonABlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "スイカA重複、青7(8192.0)",
     "suberi": [
       4,
@@ -432,7 +432,7 @@
     ]
   },
   "watermelonABarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "スイカA重複、BARビッグ(7281.8)",
     "suberi": [
       4,
@@ -459,7 +459,7 @@
     ]
   },
   "watermelonBRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "スイカB重複、赤7(16384.0)",
     "suberi": [
       4,
@@ -486,7 +486,7 @@
     ]
   },
   "reachReplayRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "特リプ、赤7(16384.0)",
     "suberi": [
       1,
@@ -513,7 +513,7 @@
     ]
   },
   "reachReplayBlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "特リプ、青7(16384.0)",
     "suberi": [
       1,
@@ -540,7 +540,7 @@
     ]
   },
   "reachRoleARedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "リーチ目役A、赤7(5461.3)",
     "suberi": [
       2,
@@ -567,7 +567,7 @@
     ]
   },
   "reachRoleABlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "リーチ目役A、青7(10922.7)",
     "suberi": [
       3,
@@ -594,7 +594,7 @@
     ]
   },
   "reachRoleABarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "リーチ目役A、BARビッグ(8192.0)",
     "suberi": [
       4,
@@ -621,7 +621,7 @@
     ]
   },
   "reachRoleAMixedBonus": {
-    "type": "big",
+    "type": "mixed",
     "text": "リーチ目役A、異色(13107.2/10922.7/5461.3/4681.1)",
     "suberi": [
       4,
@@ -648,7 +648,7 @@
     ]
   },
   "reachRoleBRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "リーチ目役B、赤7(7281.8)",
     "suberi": [
       2,
@@ -675,7 +675,7 @@
     ]
   },
   "reachRoleBBlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "リーチ目役B、青7(3449.3)",
     "suberi": [
       4,
@@ -702,7 +702,7 @@
     ]
   },
   "reachRoleBBarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "リーチ目役B、BARビッグ(8192.0)",
     "suberi": [
       4,
@@ -756,7 +756,7 @@
     ]
   },
   "reachRoleCRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "リーチ目役C、赤7(13107.2)",
     "suberi": [
       3,
@@ -783,7 +783,7 @@
     ]
   },
   "reachRoleCBlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "リーチ目役C、青7(16384.0)",
     "suberi": [
       4,
@@ -810,7 +810,7 @@
     ]
   },
   "reachRoleCBarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "リーチ目役C、BARビッグ(7281.8)",
     "suberi": [
       4,
@@ -864,7 +864,7 @@
     ]
   },
   "reachRoleDRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "リーチ目役D、赤7(6553.6)",
     "suberi": [
       4,
@@ -891,7 +891,7 @@
     ]
   },
   "reachRoleDBlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "リーチ目役D、青7(10922.7)",
     "suberi": [
       4,
@@ -918,7 +918,7 @@
     ]
   },
   "reachRoleDBarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "リーチ目役D、BARビッグ(8192.0)",
     "suberi": [
       3,
@@ -972,7 +972,7 @@
     ]
   },
   "commonOneCoinRedBonus": {
-    "type": "big",
+    "type": "red",
     "text": "共通1枚役、赤7(9362.3)",
     "suberi": [
       3,
@@ -999,7 +999,7 @@
     ]
   },
   "commonOneCoinBlueBonus": {
-    "type": "big",
+    "type": "blue",
     "text": "共通1枚役、青7(9352.3)",
     "suberi": [
       3,
@@ -1026,7 +1026,7 @@
     ]
   },
   "commonOneCoinBarBonus": {
-    "type": "big",
+    "type": "black",
     "text": "共通1枚役、BARビッグ(9362.3)",
     "suberi": [
       3,
