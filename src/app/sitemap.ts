@@ -1,45 +1,43 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+
 import { getDocSlugAll } from "@/lib/docs";
 import { getGameSlugAll } from "@/lib/games";
-import { ToolData, getToolDataAll } from "@/lib/tools";
+import { getToolDataAll } from "@/lib/tools";
 
 export const dynamic = "force-static";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = (process.env.BASE_URL || "https://ittokunvim.site").replace(
+  /\/$/,
+  "",
+);
 
-type Sitemap = {
-  url: string,
-  lastModified: Date,
-};
+function toUrl(path: string): string {
+  return new URL(path, `${BASE_URL}/`).href;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const sitemap = (url: string) => {
-    return {
-      url,
-      lastModified: new Date(),
-    };
-  };
-  const routeList = [
-    "/",
-    "/nextjs",
-    "/music",
-    "/pictures",
-  ];
-  const docSlugs: string[] = await getDocSlugAll();
-  const gameSlugs: string[] = await getGameSlugAll();
-  const toolSlugs: ToolData[] = getToolDataAll();
-  const routes: Sitemap[] = routeList.map((route) => {
-    return sitemap(route);
-  });
-  const docPages: Sitemap[] = docSlugs.map((slug) => {
-    return sitemap(`${BASE_URL}/docs/${slug}`);
-  });
-  const gamePages: Sitemap[] = gameSlugs.map((slug) => {
-    return sitemap(`${BASE_URL}/games/${slug}`);
-  });
-  const toolPages: Sitemap[] = toolSlugs.map((slug) => {
-    return sitemap(`${BASE_URL}/tools/${slug}`);
-  });
+  const lastModified = new Date();
+  const docSlugs = await getDocSlugAll();
+  const gameSlugs = await getGameSlugAll();
+  const tools = getToolDataAll();
+  const staticRoutes = ["/", "/nextjs", "/music", "/pictures"];
+
+  const routes = staticRoutes.map((path) => ({
+    url: toUrl(path),
+    lastModified,
+  }));
+  const docPages = docSlugs.map((slug) => ({
+    url: toUrl(`/docs/${slug}`),
+    lastModified,
+  }));
+  const gamePages = gameSlugs.map((slug) => ({
+    url: toUrl(`/games/${slug}`),
+    lastModified,
+  }));
+  const toolPages = tools.map((tool) => ({
+    url: toUrl(`/tools/${tool.slug}`),
+    lastModified,
+  }));
 
   return [...routes, ...docPages, ...gamePages, ...toolPages];
 }

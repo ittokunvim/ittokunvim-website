@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const itchUrl = "https://ittokunvim.itch.io";
 
   const externals = [
-    { name: "Source Code", url: "https://github.com/ittokunvim/ittokunvim-xyz/" },
+    { name: "Source Code", url: "https://github.com/ittokunvim/ittokunvim-website/" },
     { name: "Next.js", url: "https://nextjs.org/" },
     { name: "Vercel", url: "https://vercel.com/" },
     { name: "Pixlr", url: "https://pixlr.com/jp/" },
