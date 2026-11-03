@@ -1,6 +1,6 @@
 # ittokunvim website
 
-`ittokunvim-xyz`はittokunvimが公開しているWebサイトです
+`ittokunvim-website`はittokunvimが公開しているWebサイトです
 
 ## はじめに
 
